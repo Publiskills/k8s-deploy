@@ -74,6 +74,7 @@ function setImagePullSecrets(inputObject: any, newImagePullSecrets: any) {
 }
 
 function substituteImageNameInSpecContent(currentString: string, imageName: string, imageNameWithNewTag: string) {
+    core.debug('substituteImageNameInSpecContent: '  + imageName);
     if (currentString.indexOf(imageName) < 0) {
         core.debug(`No occurence of replacement token: ${imageName} found`);
         return currentString;
@@ -88,6 +89,8 @@ function substituteImageNameInSpecContent(currentString: string, imageName: stri
                 .replace(/[',"]/g, '') // replace allowed quotes with nothing
                 .split(':');
 
+            core.debug('substituteImageNameInSpecContent currentImageName: '  + currentImageName);
+            core.debug('substituteImageNameInSpecContent imageNameWithNewTag: '  + imageNameWithNewTag);
             if (currentImageName === imageName) {
                 return acc + `${imageKeyword[0]} ${imageNameWithNewTag}\n`;
             }
@@ -98,15 +101,19 @@ function substituteImageNameInSpecContent(currentString: string, imageName: stri
 }
 
 export function updateContainerImagesInManifestFiles(contents, containers: string[]): string {
+    core.debug('=========> updateContainerImagesInManifestFiles');
     if (!!containers && containers.length > 0) {
         containers.forEach((container: string) => {
+            core.debug('container: '  + container);
             let imageName = container;
             if (imageName.indexOf(':') > 0) {
                 imageName = imageName.substring(0, imageName.lastIndexOf(':'));
             }
+            core.debug('imageName: '  + imageName);
             if (imageName.indexOf('@') > 0) {
                 imageName = imageName.split('@')[0];
             }
+            core.debug('imageName: '  + imageName);
             if (contents.indexOf(imageName) > 0) {
                 contents = substituteImageNameInSpecContent(contents, imageName, container);
             }
