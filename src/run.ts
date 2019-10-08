@@ -132,7 +132,9 @@ function checkClusterContext() {
 }
 
 async function run() {
+    core.warning('=====> run');
     core.debug('=====> run');
+    core.error('=====> run');
     checkClusterContext();
     await setKubectlPath();
     let manifestsInput = core.getInput('manifests');
@@ -157,4 +159,7 @@ async function run() {
     await checkManifestsStability(manifests, namespace);
 }
 
+core.warning('=====> run 1');
+core.debug('=====> run 1');
+core.error('=====> run 1');
 run().catch(core.setFailed);
