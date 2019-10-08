@@ -101,6 +101,7 @@ function writeObjectsToFile(inputObjects: any[]): string[] {
 function updateManifests(manifests: string[], imagesToOverride: string, imagepullsecrets: string): string[] {
     const newObjectsList = [];
     manifests.forEach((filePath: string) => {
+        core.debug(`=====> updateManifests: ${filePath}`);
         let fileContents = fs.readFileSync(filePath).toString();
         fileContents = updateContainerImagesInManifestFiles(fileContents, imagesToOverride.split('\n'));
         yaml.safeLoadAll(fileContents, function (inputObject: any) {
@@ -145,7 +146,10 @@ async function run() {
     let manifests = manifestsInput.split('\n');
     const imagesToOverride = core.getInput('images');
     const imagePullSecretsToAdd = core.getInput('imagepullsecrets');
+    core.debug('=====> imagesToOverride: ' + imagesToOverride);
+    core.debug('=====> imagePullSecretsToAdd: ' + imagePullSecretsToAdd);
     if (!!imagePullSecretsToAdd || !!imagesToOverride) {
+        core.debug('=====> call updateManifests');
         manifests = updateManifests(manifests, imagesToOverride, imagePullSecretsToAdd)
     }
     await deploy(manifests, namespace);
