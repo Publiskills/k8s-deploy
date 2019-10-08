@@ -132,6 +132,7 @@ function checkClusterContext() {
 }
 
 async function run() {
+    core.debug('=====> run');
     checkClusterContext();
     await setKubectlPath();
     let manifestsInput = core.getInput('manifests');
