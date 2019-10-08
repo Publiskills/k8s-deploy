@@ -74,13 +74,15 @@ function setImagePullSecrets(inputObject: any, newImagePullSecrets: any) {
 }
 
 function substituteImageNameInSpecContent(currentString: string, imageName: string, imageNameWithNewTag: string) {
-    core.debug('substituteImageNameInSpecContent: '  + imageName);
+    core.debug('substituteImageNameInSpecContent imageName: '  + imageName);
+    core.debug('substituteImageNameInSpecContent currentString: '  + currentString);
     if (currentString.indexOf(imageName) < 0) {
         core.debug(`No occurence of replacement token: ${imageName} found`);
         return currentString;
     }
 
     return currentString.split('\n').reduce((acc, line) => {
+        core.debug('substituteImageNameInSpecContent line: '  + line);
         const imageKeyword = line.match(/^ *image:/);
         if (imageKeyword) {
             const [currentImageName, currentImageTag] = line
